@@ -1,5 +1,6 @@
 import api from './api';
 import { Performance, PerformanceGoal, Skill } from '../types';
+import { mockPerformanceData } from './mockData';
 
 interface PerformanceCreateData {
   user: number;
@@ -35,71 +36,136 @@ class PerformanceService {
     status?: string;
     review_type?: string;
   }) {
-    const response = await api.get<{ results: Performance[] }>('/reviews/', { params });
-    return response.data;
+    try {
+      const response = await api.get<{ results: Performance[] }>('/api/reviews/', { params });
+      return response.data;
+    } catch (error) {
+      console.warn('Using mock data for performance reviews:', error);
+      return { results: mockPerformanceData.reviews };
+    }
   }
 
   async getReview(id: number) {
-    const response = await api.get<Performance>(`/reviews/${id}/`);
-    return response.data;
+    try {
+      const response = await api.get<Performance>(`/api/reviews/${id}/`);
+      return response.data;
+    } catch (error) {
+      console.warn('Using mock data for performance review:', error);
+      return mockPerformanceData.reviews.find(r => r.id === id);
+    }
   }
 
   async createReview(data: PerformanceCreateData) {
-    const response = await api.post<Performance>('/reviews/', data);
-    return response.data;
+    try {
+      const response = await api.post<Performance>('/api/reviews/', data);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating performance review:', error);
+      throw error;
+    }
   }
 
   async updateReview(id: number, data: PerformanceUpdateData) {
-    const response = await api.patch<Performance>(`/reviews/${id}/`, data);
-    return response.data;
+    try {
+      const response = await api.patch<Performance>(`/api/reviews/${id}/`, data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating performance review:', error);
+      throw error;
+    }
   }
 
   async deleteReview(id: number) {
-    await api.delete(`/reviews/${id}/`);
+    try {
+      await api.delete(`/api/reviews/${id}/`);
+    } catch (error) {
+      console.error('Error deleting performance review:', error);
+      throw error;
+    }
   }
 
   async submitReview(id: number) {
-    const response = await api.post<Performance>(`/reviews/${id}/submit/`);
-    return response.data;
+    try {
+      const response = await api.post<Performance>(`/api/reviews/${id}/submit/`);
+      return response.data;
+    } catch (error) {
+      console.error('Error submitting performance review:', error);
+      throw error;
+    }
   }
 
   async acknowledgeReview(id: number) {
-    const response = await api.post<Performance>(`/reviews/${id}/acknowledge/`);
-    return response.data;
+    try {
+      const response = await api.post<Performance>(`/api/reviews/${id}/acknowledge/`);
+      return response.data;
+    } catch (error) {
+      console.error('Error acknowledging performance review:', error);
+      throw error;
+    }
   }
 
   // Goals
   async getGoals(reviewId: number) {
-    const response = await api.get<{ results: PerformanceGoal[] }>(`/reviews/${reviewId}/goals/`);
-    return response.data;
+    try {
+      const response = await api.get<{ results: PerformanceGoal[] }>(`/api/reviews/${reviewId}/goals/`);
+      return response.data;
+    } catch (error) {
+      console.warn('Using mock data for performance goals:', error);
+      return { results: mockPerformanceData.goals.filter(g => g.performanceId === reviewId) };
+    }
   }
 
   async updateGoal(reviewId: number, goalId: number, data: {
     rating: number;
     comments: string;
   }) {
-    const response = await api.patch<PerformanceGoal>(`/reviews/${reviewId}/goals/${goalId}/`, data);
-    return response.data;
+    try {
+      const response = await api.patch<PerformanceGoal>(`/api/reviews/${reviewId}/goals/${goalId}/`, data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating performance goal:', error);
+      throw error;
+    }
   }
 
   // Skills
   async getSkills() {
-    const response = await api.get<{ results: Skill[] }>('/skills/');
-    return response.data;
+    try {
+      const response = await api.get<{ results: Skill[] }>('/api/skills/');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching skills:', error);
+      throw error;
+    }
   }
 
   async createSkill(data: { name: string; category: string }) {
-    const response = await api.post<Skill>('/skills/', data);
-    return response.data;
+    try {
+      const response = await api.post<Skill>('/api/skills/', data);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating skill:', error);
+      throw error;
+    }
   }
 
   async updateSkill(id: number, data: { name?: string; category?: string }) {
-    const response = await api.patch<Skill>(`/skills/${id}/`, data);
-    return response.data;
+    try {
+      const response = await api.patch<Skill>(`/api/skills/${id}/`, data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating skill:', error);
+      throw error;
+    }
   }
 
   async deleteSkill(id: number) {
-    await api.delete(`/skills/${id}/`);
+    try {
+      await api.delete(`/api/skills/${id}/`);
+    } catch (error) {
+      console.error('Error deleting skill:', error);
+      throw error;
+    }
   }
 
   // Analytics
@@ -107,15 +173,25 @@ class PerformanceService {
     department?: string;
     period?: string;
   }) {
-    const response = await api.get('/reviews/analytics/', { params });
-    return response.data;
+    try {
+      const response = await api.get('/api/reviews/analytics/', { params });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching performance analytics:', error);
+      throw error;
+    }
   }
 
   async getSkillMatrix(params?: {
     department?: string;
   }) {
-    const response = await api.get('/skills/matrix/', { params });
-    return response.data;
+    try {
+      const response = await api.get('/api/skills/matrix/', { params });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching skill matrix:', error);
+      throw error;
+    }
   }
 }
 

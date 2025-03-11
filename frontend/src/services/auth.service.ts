@@ -39,7 +39,7 @@ export interface ResetPasswordConfirmData {
 
 class AuthService {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    const response = await api.post<AuthResponse>('/token/', credentials);
+    const response = await api.post<AuthResponse>('/api/token/', credentials);
     if (response.data.access) {
       localStorage.setItem('token', response.data.access);
       localStorage.setItem('refresh_token', response.data.refresh);
@@ -62,7 +62,7 @@ class AuthService {
     const refreshToken = localStorage.getItem('refresh_token');
     if (!refreshToken) throw new Error('No refresh token available');
 
-    const response = await api.post<AuthResponse>('/token/refresh/', {
+    const response = await api.post<AuthResponse>('/api/token/refresh/', {
       refresh: refreshToken,
     });
 

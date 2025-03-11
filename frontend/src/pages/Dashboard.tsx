@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Spin, DatePicker } from 'antd';
+import { Row, Col, Spin, DatePicker, message, Alert } from 'antd';
 import {
   DollarOutlined,
   TeamOutlined,
@@ -12,12 +12,14 @@ import MetricsCard from '../components/dashboard/MetricsCard';
 import ProjectHealthChart from '../components/dashboard/ProjectHealthChart';
 import ResourceUtilization from '../components/dashboard/ResourceUtilization';
 import dashboardService from '../services/dashboard.service';
+import { DashboardMetrics } from '../types';
 
 const { RangePicker } = DatePicker;
 
 const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
-  const [metrics, setMetrics] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
   const [projectHealth, setProjectHealth] = useState<any[]>([]);
   const [resources, setResources] = useState<any[]>([]);
   const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>([
@@ -28,6 +30,8 @@ const Dashboard: React.FC = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
+      setError(null);
+
       const [metricsData, healthData, resourceData] = await Promise.all([
         dashboardService.getMetrics(),
         dashboardService.getProjectHealthMetrics(),
@@ -42,6 +46,8 @@ const Dashboard: React.FC = () => {
       setResources(resourceData);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
+      setError('Failed to fetch dashboard data. Please try again later.');
+      message.error('Failed to fetch dashboard data');
     } finally {
       setLoading(false);
     }
@@ -61,12 +67,23 @@ const Dashboard: React.FC = () => {
 
   return (
     <div>
-      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'flex-end' }}>
+      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h1 style={{ margin: 0 }}>Dashboard</h1>
         <RangePicker
           value={dateRange}
           onChange={(dates) => dates && setDateRange(dates)}
         />
       </div>
+
+      {error && (
+        <Alert
+          message="Error"
+          description={error}
+          type="error"
+          showIcon
+          style={{ marginBottom: 16 }}
+        />
+      )}
 
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} lg={6}>

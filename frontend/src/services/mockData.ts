@@ -1,0 +1,221 @@
+import { DashboardMetrics, Timesheet, Leave, Performance, Project, User } from '../types';
+
+export const mockDashboardData = {
+  metrics: {
+    revenue: 150000,
+    revenueTrend: 15,
+    activeProjects: 12,
+    projectsTrend: 8,
+    teamMembers: 25,
+    avgUtilization: 85,
+    utilizationTrend: 5,
+  },
+  projectHealth: [
+    {
+      name: 'Q1 2024',
+      onTrack: 8,
+      atRisk: 3,
+      delayed: 1,
+    },
+    {
+      name: 'Q2 2024',
+      onTrack: 10,
+      atRisk: 2,
+      delayed: 2,
+    },
+    {
+      name: 'Q3 2024',
+      onTrack: 7,
+      atRisk: 4,
+      delayed: 1,
+    },
+  ],
+  resourceUtilization: [
+    {
+      id: 1,
+      name: 'John Doe',
+      department: 'Development',
+      utilization: 90,
+      projects: ['Project A', 'Project B'],
+    },
+    {
+      id: 2,
+      name: 'Jane Smith',
+      department: 'Design',
+      utilization: 75,
+      projects: ['Project C'],
+    },
+    {
+      id: 3,
+      name: 'Mike Johnson',
+      department: 'Development',
+      utilization: 85,
+      projects: ['Project A', 'Project D'],
+    },
+  ],
+};
+
+export const mockTimesheetData = {
+  timesheets: [
+    {
+      id: 1,
+      user: 1,
+      project: 1,
+      date: '2024-03-10',
+      hours: 8,
+      description: 'Frontend development',
+      status: 'PENDING',
+      submittedAt: '2024-03-10T18:00:00Z',
+    },
+    {
+      id: 2,
+      user: 1,
+      project: 2,
+      date: '2024-03-11',
+      hours: 6,
+      description: 'Backend API integration',
+      status: 'APPROVED',
+      submittedAt: '2024-03-11T17:00:00Z',
+      approvedBy: 2,
+      approvedAt: '2024-03-12T09:00:00Z',
+    },
+  ] as Timesheet[],
+  projects: [
+    {
+      id: 1,
+      name: 'Project A',
+      description: 'E-commerce Platform',
+      client: 'ABC Corp',
+      startDate: '2024-01-01',
+      endDate: '2024-06-30',
+      status: 'IN_PROGRESS',
+      budget: 100000,
+      actualCost: 45000,
+    },
+    {
+      id: 2,
+      name: 'Project B',
+      description: 'Mobile App Development',
+      client: 'XYZ Ltd',
+      startDate: '2024-02-01',
+      endDate: '2024-08-31',
+      status: 'IN_PROGRESS',
+      budget: 150000,
+      actualCost: 60000,
+    },
+  ] as Project[],
+};
+
+export const mockLeaveData = {
+  leaveRequests: [
+    {
+      id: 1,
+      user: 1,
+      leaveType: 'ANNUAL',
+      startDate: '2024-04-01',
+      endDate: '2024-04-05',
+      daysRequested: 5,
+      reason: 'Family vacation',
+      status: 'PENDING',
+    },
+    {
+      id: 2,
+      user: 1,
+      leaveType: 'SICK',
+      startDate: '2024-03-15',
+      endDate: '2024-03-15',
+      daysRequested: 1,
+      reason: 'Doctor appointment',
+      status: 'APPROVED',
+      approvedBy: 2,
+      approvedAt: '2024-03-14T10:00:00Z',
+    },
+  ] as Leave[],
+  leaveBalance: {
+    annual: 20,
+    sick: 10,
+    personal: 5,
+    other: 2,
+  },
+};
+
+export const mockPerformanceData = {
+  reviews: [
+    {
+      id: 1,
+      user: 1,
+      reviewer: 2,
+      reviewPeriod: 'Q1 2024',
+      reviewType: 'MID_YEAR',
+      status: 'DRAFT',
+      submittedAt: null,
+      reviewedAt: null,
+      acknowledgedAt: null,
+      comments: '',
+    },
+    {
+      id: 2,
+      user: 1,
+      reviewer: 2,
+      reviewPeriod: 'Q4 2023',
+      reviewType: 'YEAR_END',
+      overallRating: 4,
+      status: 'ACKNOWLEDGED',
+      submittedAt: '2024-01-05T15:00:00Z',
+      reviewedAt: '2024-01-10T11:00:00Z',
+      acknowledgedAt: '2024-01-11T09:00:00Z',
+      comments: 'Great performance overall.',
+    },
+  ] as Performance[],
+  goals: [
+    {
+      id: 1,
+      performanceId: 1,
+      description: 'Complete frontend development training',
+      category: 'Skill Development',
+      weight: 30,
+      rating: null,
+      comments: null,
+    },
+    {
+      id: 2,
+      performanceId: 1,
+      description: 'Improve code quality metrics',
+      category: 'Technical',
+      weight: 40,
+      rating: null,
+      comments: null,
+    },
+  ],
+};
+
+export const mockUsers: User[] = [
+  {
+    id: 1,
+    username: 'johndoe',
+    email: 'john@example.com',
+    firstName: 'John',
+    lastName: 'Doe',
+    role: 'DEVELOPER',
+    department: 'Development',
+    position: 'Senior Developer',
+    phoneNumber: '+1234567890',
+    dateOfBirth: '1990-01-01',
+    dateOfJoining: '2022-01-01',
+    isActive: true,
+  },
+  {
+    id: 2,
+    username: 'janesmith',
+    email: 'jane@example.com',
+    firstName: 'Jane',
+    lastName: 'Smith',
+    role: 'MANAGER',
+    department: 'Development',
+    position: 'Project Manager',
+    phoneNumber: '+1234567891',
+    dateOfBirth: '1988-05-15',
+    dateOfJoining: '2021-06-01',
+    isActive: true,
+  },
+];

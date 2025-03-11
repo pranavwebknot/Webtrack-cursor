@@ -1,5 +1,6 @@
 import api from './api';
 import { Leave } from '../types';
+import { mockLeaveData } from './mockData';
 
 interface LeaveRequestCreateData {
   leave_type: 'ANNUAL' | 'SICK' | 'PERSONAL' | 'OTHER';
@@ -20,57 +21,114 @@ class LeaveService {
     start_date?: string;
     end_date?: string;
   }) {
-    const response = await api.get<{ results: Leave[] }>('/leave-requests/', { params });
-    return response.data;
+    try {
+      const response = await api.get<{ results: Leave[] }>('/api/leave-requests/', { params });
+      return response.data;
+    } catch (error) {
+      console.warn('Using mock data for leave requests:', error);
+      return { results: mockLeaveData.leaveRequests };
+    }
   }
 
   async getLeaveRequest(id: number) {
-    const response = await api.get<Leave>(`/leave-requests/${id}/`);
-    return response.data;
+    try {
+      const response = await api.get<Leave>(`/api/leave-requests/${id}/`);
+      return response.data;
+    } catch (error) {
+      console.warn('Using mock data for leave request:', error);
+      return mockLeaveData.leaveRequests.find(l => l.id === id);
+    }
   }
 
   async createLeaveRequest(data: LeaveRequestCreateData) {
-    const response = await api.post<Leave>('/leave-requests/', data);
-    return response.data;
+    try {
+      const response = await api.post<Leave>('/api/leave-requests/', data);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating leave request:', error);
+      throw error;
+    }
   }
 
   async updateLeaveRequest(id: number, data: LeaveRequestUpdateData) {
-    const response = await api.patch<Leave>(`/leave-requests/${id}/`, data);
-    return response.data;
+    try {
+      const response = await api.patch<Leave>(`/api/leave-requests/${id}/`, data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating leave request:', error);
+      throw error;
+    }
   }
 
   async deleteLeaveRequest(id: number) {
-    await api.delete(`/leave-requests/${id}/`);
+    try {
+      await api.delete(`/api/leave-requests/${id}/`);
+    } catch (error) {
+      console.error('Error deleting leave request:', error);
+      throw error;
+    }
   }
 
   async approveLeaveRequest(id: number) {
-    const response = await api.post<Leave>(`/leave-requests/${id}/approve/`);
-    return response.data;
+    try {
+      const response = await api.post<Leave>(`/api/leave-requests/${id}/approve/`);
+      return response.data;
+    } catch (error) {
+      console.error('Error approving leave request:', error);
+      throw error;
+    }
   }
 
   async rejectLeaveRequest(id: number, reason: string) {
-    const response = await api.post<Leave>(`/leave-requests/${id}/reject/`, { reason });
-    return response.data;
+    try {
+      const response = await api.post<Leave>(`/api/leave-requests/${id}/reject/`, { reason });
+      return response.data;
+    } catch (error) {
+      console.error('Error rejecting leave request:', error);
+      throw error;
+    }
   }
 
   // Leave Balances
   async getLeaveBalance(userId?: number) {
-    const response = await api.get('/leave-balances/', {
-      params: userId ? { user: userId } : undefined,
-    });
-    return response.data;
+    try {
+      const response = await api.get('/api/leave-balances/', {
+        params: userId ? { user: userId } : undefined,
+      });
+      return response.data;
+    } catch (error) {
+      console.warn('Using mock data for leave balance:', error);
+      return mockLeaveData.leaveBalance;
+    }
   }
 
   // Leave Types
   async getLeaveTypes() {
-    const response = await api.get('/leave-types/');
-    return response.data;
+    try {
+      const response = await api.get('/api/leave-types/');
+      return response.data;
+    } catch (error) {
+      console.warn('Using mock data for leave types:', error);
+      return {
+        results: [
+          { id: 1, name: 'Annual Leave', default_days: 20 },
+          { id: 2, name: 'Sick Leave', default_days: 10 },
+          { id: 3, name: 'Personal Leave', default_days: 5 },
+          { id: 4, name: 'Other Leave', default_days: 0 },
+        ],
+      };
+    }
   }
 
   // Leave Policies
   async getLeavePolicies() {
-    const response = await api.get('/leave-policies/');
-    return response.data;
+    try {
+      const response = await api.get('/api/leave-policies/');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching leave policies:', error);
+      throw error;
+    }
   }
 
   // Analytics
@@ -78,16 +136,26 @@ class LeaveService {
     department?: string;
     year?: number;
   }) {
-    const response = await api.get('/leave-requests/analytics/', { params });
-    return response.data;
+    try {
+      const response = await api.get('/api/leave-requests/analytics/', { params });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching leave analytics:', error);
+      throw error;
+    }
   }
 
   async getTeamCalendar(params?: {
     department?: string;
     month?: string;
   }) {
-    const response = await api.get('/leave-requests/calendar/', { params });
-    return response.data;
+    try {
+      const response = await api.get('/api/leave-requests/calendar/', { params });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching team calendar:', error);
+      throw error;
+    }
   }
 }
 

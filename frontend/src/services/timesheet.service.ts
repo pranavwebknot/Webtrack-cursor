@@ -1,5 +1,6 @@
 import api from './api';
 import { Timesheet } from '../types';
+import { mockTimesheetData } from './mockData';
 
 interface TimesheetCreateData {
   project: number;
@@ -20,37 +21,82 @@ class TimesheetService {
     user?: number;
     status?: string;
   }) {
-    const response = await api.get<{ results: Timesheet[] }>('/timesheets/', { params });
-    return response.data;
+    try {
+      const response = await api.get<{ results: Timesheet[] }>('/api/timesheets/', { params });
+      return response.data;
+    } catch (error) {
+      console.warn('Using mock data for timesheets:', error);
+      return { results: mockTimesheetData.timesheets };
+    }
   }
 
   async getTimesheet(id: number) {
-    const response = await api.get<Timesheet>(`/timesheets/${id}/`);
-    return response.data;
+    try {
+      const response = await api.get<Timesheet>(`/api/timesheets/${id}/`);
+      return response.data;
+    } catch (error) {
+      console.warn('Using mock data for timesheet:', error);
+      return mockTimesheetData.timesheets.find(t => t.id === id);
+    }
   }
 
   async createTimesheet(data: TimesheetCreateData) {
-    const response = await api.post<Timesheet>('/timesheets/', data);
-    return response.data;
+    try {
+      const response = await api.post<Timesheet>('/api/timesheets/', data);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating timesheet:', error);
+      throw error;
+    }
   }
 
   async updateTimesheet(id: number, data: TimesheetUpdateData) {
-    const response = await api.patch<Timesheet>(`/timesheets/${id}/`, data);
-    return response.data;
+    try {
+      const response = await api.patch<Timesheet>(`/api/timesheets/${id}/`, data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating timesheet:', error);
+      throw error;
+    }
   }
 
   async deleteTimesheet(id: number) {
-    await api.delete(`/timesheets/${id}/`);
+    try {
+      await api.delete(`/api/timesheets/${id}/`);
+    } catch (error) {
+      console.error('Error deleting timesheet:', error);
+      throw error;
+    }
   }
 
   async approveTimesheet(id: number) {
-    const response = await api.post<Timesheet>(`/timesheets/${id}/approve/`);
-    return response.data;
+    try {
+      const response = await api.post<Timesheet>(`/api/timesheets/${id}/approve/`);
+      return response.data;
+    } catch (error) {
+      console.error('Error approving timesheet:', error);
+      throw error;
+    }
   }
 
   async rejectTimesheet(id: number, reason: string) {
-    const response = await api.post<Timesheet>(`/timesheets/${id}/reject/`, { reason });
-    return response.data;
+    try {
+      const response = await api.post<Timesheet>(`/api/timesheets/${id}/reject/`, { reason });
+      return response.data;
+    } catch (error) {
+      console.error('Error rejecting timesheet:', error);
+      throw error;
+    }
+  }
+
+  async getProjects() {
+    try {
+      const response = await api.get('/api/projects/');
+      return response.data;
+    } catch (error) {
+      console.warn('Using mock data for projects:', error);
+      return { results: mockTimesheetData.projects };
+    }
   }
 
   async getTimesheetSummary(params?: {
@@ -59,8 +105,13 @@ class TimesheetService {
     project?: number;
     user?: number;
   }) {
-    const response = await api.get('/timesheets/summary/', { params });
-    return response.data;
+    try {
+      const response = await api.get('/api/timesheets/summary/', { params });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching timesheet summary:', error);
+      throw error;
+    }
   }
 }
 

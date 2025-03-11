@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { ConfigProvider } from 'antd';
 import { store } from './store';
+import theme from './theme';
 import MainLayout from './layouts/MainLayout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -22,7 +23,15 @@ const App: React.FC = () => {
       <ConfigProvider
         theme={{
           token: {
-            colorPrimary: '#1890ff',
+            colorPrimary: theme.colors.primary,
+            colorSuccess: theme.colors.success,
+            colorWarning: theme.colors.warning,
+            colorError: theme.colors.error,
+            colorInfo: theme.colors.info,
+            colorTextBase: theme.colors.text.primary,
+            colorBgBase: theme.colors.background.light,
+            borderRadius: parseInt(theme.borderRadius.md),
+            fontFamily: theme.typography.fontFamily,
           },
         }}
       >

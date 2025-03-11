@@ -1,93 +1,127 @@
 import React, { useState } from 'react';
-import { Layout, Menu, Button, Avatar, Dropdown } from 'antd';
+import { Layout, Menu } from 'antd';
 import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
   DashboardOutlined,
   ClockCircleOutlined,
   CalendarOutlined,
   TrophyOutlined,
-  UserOutlined,
-  LogoutOutlined,
+  TeamOutlined,
+  ProjectOutlined,
+  FileTextOutlined,
 } from '@ant-design/icons';
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import authService from '../services/auth.service';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import Header from '../components/Header';
+import theme from '../theme';
+import WebknotLogo from '../components/WebknotLogo';
 
-const { Header, Sider, Content } = Layout;
+const { Sider, Content } = Layout;
 
 const MainLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const location = useLocation();
   const navigate = useNavigate();
-
-  const handleLogout = () => {
-    authService.logout();
-    navigate('/login');
-  };
-
-  const userMenuItems = [
-    {
-      key: 'profile',
-      icon: <UserOutlined />,
-      label: 'Profile',
-    },
-    {
-      key: 'logout',
-      icon: <LogoutOutlined />,
-      label: 'Logout',
-      onClick: handleLogout,
-    },
-  ];
+  const location = useLocation();
 
   const menuItems = [
     {
       key: '/',
       icon: <DashboardOutlined />,
-      label: <Link to="/">Dashboard</Link>,
+      label: 'Dashboard',
     },
     {
       key: '/timesheet',
       icon: <ClockCircleOutlined />,
-      label: <Link to="/timesheet">Timesheet</Link>,
+      label: 'Timesheet',
     },
     {
       key: '/leave',
       icon: <CalendarOutlined />,
-      label: <Link to="/leave">Leave</Link>,
+      label: 'Leave',
     },
     {
       key: '/performance',
       icon: <TrophyOutlined />,
-      label: <Link to="/performance">Performance</Link>,
+      label: 'Performance',
+    },
+    {
+      key: '/projects',
+      icon: <ProjectOutlined />,
+      label: 'Projects',
+    },
+    {
+      key: '/team',
+      icon: <TeamOutlined />,
+      label: 'Team',
+    },
+    {
+      key: '/reports',
+      icon: <FileTextOutlined />,
+      label: 'Reports',
     },
   ];
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div style={{ height: 32, margin: 16, background: 'rgba(255, 255, 255, 0.2)' }} />
+      <Sider
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+        style={{
+          background: '#fff',
+          boxShadow: theme.shadows.sm,
+        }}
+      >
+        <div style={{
+          height: 64,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderBottom: '1px solid #f0f0f0',
+          padding: '0 16px',
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            cursor: 'pointer',
+          }} onClick={() => navigate('/')}>
+            <WebknotLogo width={32} height={32} />
+            {!collapsed && (
+              <span style={{
+                fontSize: '16px',
+                fontWeight: 700,
+                letterSpacing: '1px',
+                color: theme.colors.brand.purple,
+                whiteSpace: 'nowrap',
+              }}>
+                WEBKNOT
+              </span>
+            )}
+          </div>
+        </div>
         <Menu
-          theme="dark"
           mode="inline"
           selectedKeys={[location.pathname]}
           items={menuItems}
+          onClick={({ key }) => navigate(key)}
+          style={{
+            borderRight: 0,
+          }}
         />
       </Sider>
       <Layout>
-        <Header style={{ padding: 0, background: '#fff' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingRight: 24 }}>
-            <Button
-              type="text"
-              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-              onClick={() => setCollapsed(!collapsed)}
-              style={{ fontSize: '16px', width: 64, height: 64 }}
-            />
-            <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
-              <Avatar icon={<UserOutlined />} />
-            </Dropdown>
-          </div>
-        </Header>
-        <Content style={{ margin: '24px 16px', padding: 24, background: '#fff' }}>
+        <Header
+          collapsed={collapsed}
+          onToggle={() => setCollapsed(!collapsed)}
+        />
+        <Content
+          style={{
+            margin: '24px',
+            padding: '24px',
+            background: '#fff',
+            borderRadius: theme.borderRadius.lg,
+            minHeight: 280,
+          }}
+        >
           <Outlet />
         </Content>
       </Layout>
